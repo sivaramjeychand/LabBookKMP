@@ -7,10 +7,20 @@ import com.labbook.kmp.util.formatDouble
 
 /**
  * Represents a physical measurement with a value and an uncertainty.
- * @param manualPrecision If set, forces the output to display this many decimal places (from user input).
+ * This class implements standard error propagation logic using operator overloading.
+ *
+ * It resides in `commonMain` to ensure 100% code sharing between Android and Desktop.
+ *
+ * @property value The central value of the measurement.
+ * @property uncertainty The absolute uncertainty (error) associated with the value.
+ * @property manualPrecision If set, overrides scientific rounding to preserve user input format.
  */
 data class Measurement(val value: Double, val uncertainty: Double = 0.0, val manualPrecision: Int? = null) {
 
+    /**
+     * Adds two measurements, propagating the uncertainty using the quadrature rule:
+     * `sqrt(error1^2 + error2^2)`
+     */
     operator fun plus(other: Measurement): Measurement {
         val newValue = this.value + other.value
         val newUncertainty = sqrt(this.uncertainty.pow(2) + other.uncertainty.pow(2))
